@@ -28,7 +28,7 @@ namespace chessboard
             return pieces[position.line, position.column];
         }
 
-        public bool ExistPieceInPosition(Position position)
+        public bool existPieceInPosition(Position position)
         {
             ValidatePosition(position);
             return piece(position) != null;
@@ -36,6 +36,10 @@ namespace chessboard
 
         public void putPiece(Piece piece, Position postionOnBoard)
         {
+            if (existPieceInPosition(postionOnBoard))
+            {
+                throw new ChessBoardException("There is already a piece in position");
+            }
             pieces[postionOnBoard.line, postionOnBoard.column] = piece;
             piece.position = postionOnBoard;
         }

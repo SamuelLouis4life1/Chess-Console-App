@@ -11,6 +11,7 @@ namespace Chess_Console
         {
             for (int i = 0; i < board.lines; i++)
             {
+                Console.Write(8 - i + " ");
                 for (int j = 0; j < board.columns; j++)
                 {
                     if(board.piece(i, j) == null)
@@ -24,6 +25,7 @@ namespace Chess_Console
                 }
                 Console.WriteLine();
             }
+            Console.Write(" a b c d e f g h");
         }
     }
 }

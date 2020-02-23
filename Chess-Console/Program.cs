@@ -1,5 +1,6 @@
 ﻿using System;
 using chess;
+using Chess_Console.chessboard;
 using chessboard;
 
 namespace Chess_Console
@@ -8,15 +9,30 @@ namespace Chess_Console
     {
         static void Main(string[] args)
         {
-            Chessboard board = new Chessboard(8, 8);
 
-            board.putPiece(new Rook(board, Color.Black), new Position(0,0));
-            board.putPiece(new Rook(board, Color.Black), new Position(1, 3));
-            board.putPiece(new King(board, Color.Black), new Position(2, 4));
+            //ChessBoarsPosition position = new ChessBoarsPosition('a', 1);
 
-            Screen.PrintChessBoard(board);
+            //Console.WriteLine(position.toPosition());
 
-            Console.ReadLine();
+            //Console.WriteLine(position);
+
+            try
+            {
+                Chessboard board = new Chessboard(8, 8);
+
+                board.putPiece(new Rook(board, Color.Black), new Position(0, 0));
+                board.putPiece(new Rook(board, Color.Black), new Position(1, 6));
+                board.putPiece(new King(board, Color.Black), new Position(0, 5));
+
+                Screen.PrintChessBoard(board);
+
+                Console.ReadLine();
+
+            }
+            catch (ChessBoardException e)
+            {
+                Console.WriteLine(e.Message);
+            }
 
         }
     }
