@@ -9,8 +9,6 @@ namespace Chess_Console
     {
         static void Main(string[] args)
         {
-
-
             try
             {
                 ChessMatch match = new ChessMatch();
@@ -18,17 +16,36 @@ namespace Chess_Console
 
                 while (!match.finished)
                 {
-                    Console.Clear();
-                    Screen.PrintChessBoard(match.board);
+                    try
+                    {
+                        Console.Clear();
+                        Screen.PrintChessBoard(match.board);
+                        Console.WriteLine();
+                        Console.WriteLine("Turn: " + match.turn);
+                        Console.WriteLine("Waiting to play: " + match.currentPlayer);
 
-                    Console.WriteLine();
-                    Console.Write("Origin: ");
-                    Position origin = Screen.readChessPositon().toPosition();
-                    Console.Write("Destiny: ");
-                    Position destiny = Screen.readChessPositon().toPosition();
+                        Console.WriteLine();
+                        Console.Write("Origin: ");
+                        Position origin = Screen.readChessPositon().toPosition();
+                        match.validateOriginPossiton(origin);
 
-                    match.executeMovement(origin, destiny);
+                        bool[,] possiblePositions = match.board.piece(origin).possibleMovements();
 
+                        Console.Clear();
+                        Screen.PrintChessBoard(match.board, possiblePositions);
+
+                        Console.WriteLine();
+                        Console.Write("Destiny: ");
+                        Position destiny = Screen.readChessPositon().toPosition();
+                        match.validateDestinyPosition(origin, destiny);
+
+                        match.executeMove(origin, destiny);
+                    }
+                    catch (ChessBoardException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.ReadLine();
+                    }
                 }
 
             }
