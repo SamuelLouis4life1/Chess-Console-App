@@ -10,30 +10,33 @@ namespace Chess_Console
         static void Main(string[] args)
         {
 
-            //ChessBoarsPosition position = new ChessBoarsPosition('a', 1);
-
-            //Console.WriteLine(position.toPosition());
-
-            //Console.WriteLine(position);
 
             try
             {
-                Chessboard board = new Chessboard(8, 8);
+                ChessMatch match = new ChessMatch();
 
-                board.putPiece(new Rook(board, Color.Black), new Position(0, 0));
-                board.putPiece(new Rook(board, Color.Black), new Position(1, 6));
-                board.putPiece(new King(board, Color.Black), new Position(0, 5));
 
-                Screen.PrintChessBoard(board);
+                while (!match.finished)
+                {
+                    Console.Clear();
+                    Screen.PrintChessBoard(match.board);
 
-                Console.ReadLine();
+                    Console.WriteLine();
+                    Console.Write("Origin: ");
+                    Position origin = Screen.readChessPositon().toPosition();
+                    Console.Write("Destiny: ");
+                    Position destiny = Screen.readChessPositon().toPosition();
+
+                    match.executeMovement(origin, destiny);
+
+                }
 
             }
             catch (ChessBoardException e)
             {
                 Console.WriteLine(e.Message);
             }
-
+            Console.ReadLine();
         }
     }
 }

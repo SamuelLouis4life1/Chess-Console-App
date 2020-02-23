@@ -19,5 +19,9 @@ namespace chessboard
             this.movementAmount = 0;
         }
 
+        public void increaseMovementAmount()
+        {
+            movementAmount++;
+        }
     }
 }
