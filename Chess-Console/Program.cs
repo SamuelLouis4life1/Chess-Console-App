@@ -1,5 +1,6 @@
 ﻿using System;
 using chess;
+using Chess_Console;
 using Chess_Console.chessboard;
 using chessboard;
 
@@ -19,10 +20,7 @@ namespace Chess_Console
                     try
                     {
                         Console.Clear();
-                        Screen.PrintChessBoard(match.board);
-                        Console.WriteLine();
-                        Console.WriteLine("Turn: " + match.turn);
-                        Console.WriteLine("Waiting to play: " + match.currentPlayer);
+                        Screen.printChessMatch(match);
 
                         Console.WriteLine();
                         Console.Write("Origin: ");

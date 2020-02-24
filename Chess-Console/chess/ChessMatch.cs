@@ -12,6 +12,8 @@ namespace chess
         public int turn { get; private set; }
         public Color currentPlayer { get; private set; }
         public bool finished { get; set;}
+        private HashSet<Piece> pieces;
+        private HashSet<Piece> captured;
 
         public ChessMatch()
         {
@@ -19,6 +21,8 @@ namespace chess
             turn = 1;
             currentPlayer = Color.Whrite;
             finished = false;
+            pieces = new HashSet<Piece>();
+            captured = new HashSet<Piece>();
             putPieces();
         }
 
@@ -28,6 +32,10 @@ namespace chess
             piece.increaseMovementAmount();
             Piece capturedPiece = board.RemovePiece(destiny);
             board.putPiece(piece, destiny);
+            if (capturedPiece != null)
+            {
+                captured.Add(capturedPiece);
+            }
         }
 
         public void executeMove( Position origin, Position destiny)
@@ -73,21 +81,116 @@ namespace chess
             }
         }
 
+        public HashSet<Piece> capturedPieces(Color color)
+        {
+            HashSet<Piece> aux = new HashSet<Piece>();
+            foreach ( Piece x  in captured)
+            {
+                if (x.color == color)
+                {
+                    aux.Add(x);
+                }
+            }
+            return aux;
+        }
+
+        public HashSet<Piece> pieceInPlay(Color color)
+        {
+            HashSet<Piece> aux = new HashSet<Piece>();
+            foreach (Piece x in pieces)
+            {
+                if (x.color == color)
+                {
+                    aux.Add(x);
+                }
+            }
+            aux.ExceptWith(capturedPieces(color));
+            return aux;
+        }
+
+        private Color adversary(Color color)
+        {
+            if (color == Color.Whrite)
+            {
+                return Color.Black;
+            }
+            else
+            {
+                return Color.Whrite;
+            }
+        }
+
+        private Piece king(Color color)
+        {
+            foreach (Piece x in pieceInPlay(color))
+            {
+                if (x is King)
+                {
+                    return x;
+                }
+            }
+            return null;
+        }
+
+        public bool isInCheck(Color color)
+        {
+            Piece Ki = king(color);
+            if (Ki == null)
+            {
+                throw new ChessBoardException("There is no king of color " + color + " on the board !");
+            }
+            foreach (Piece x in pieceInPlay(adversary(color)))
+            {
+                bool[,] array = x.possibleMovements();
+                if (array[Ki.position.line, Ki.position.column])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void putNewPiece(char column, int line, Piece piece)
+        {
+            board.putPiece(piece, new ChessBoarsPosition(column, line).toPosition());
+            pieces.Add(piece);
+        }
+
         private void putPieces()
         {
-            board.putPiece(new Rook(board, Color.Whrite), new ChessBoarsPosition ('c', 1).toPosition());
-            board.putPiece(new Rook(board, Color.Whrite), new ChessBoarsPosition('c', 2).toPosition());
-            board.putPiece(new Rook(board, Color.Whrite), new ChessBoarsPosition('d', 2).toPosition());
-            board.putPiece(new Rook(board, Color.Whrite), new ChessBoarsPosition('e', 2).toPosition());
-            board.putPiece(new Rook(board, Color.Whrite), new ChessBoarsPosition('e', 1).toPosition());
+            putNewPiece('a', 1, new Rook(board, Color.Whrite));
+            putNewPiece('b', 1, new Knight(board, Color.Whrite));
+            putNewPiece('c', 1, new Bishop(board, Color.Whrite));
+            putNewPiece('d', 1, new Queen(board, Color.Whrite));
+            putNewPiece('e', 1, new King(board, Color.Whrite, this));
+            putNewPiece('f', 1, new Bishop(board, Color.Whrite));
+            putNewPiece('g', 1, new Knight(board, Color.Whrite));
+            putNewPiece('h', 1, new Rook(board, Color.Whrite));
+            putNewPiece('a', 2, new Pawn(board, Color.Whrite, this));
+            putNewPiece('b', 2, new Pawn(board, Color.Whrite, this));
+            putNewPiece('c', 2, new Pawn(board, Color.Whrite, this));
+            putNewPiece('d', 2, new Pawn(board, Color.Whrite, this));
+            putNewPiece('e', 2, new Pawn(board, Color.Whrite, this));
+            putNewPiece('f', 2, new Pawn(board, Color.Whrite, this));
+            putNewPiece('g', 2, new Pawn(board, Color.Whrite, this));
+            putNewPiece('h', 2, new Pawn(board, Color.Whrite, this));
 
-
-            board.putPiece(new King(board, Color.Whrite), new ChessBoarsPosition('c', 7).toPosition());
-            board.putPiece(new King(board, Color.Whrite), new ChessBoarsPosition('c', 6).toPosition());
-            board.putPiece(new King(board, Color.Whrite), new ChessBoarsPosition('d', 7).toPosition());
-            board.putPiece(new King(board, Color.Whrite), new ChessBoarsPosition('e', 6).toPosition());
-            board.putPiece(new King(board, Color.Whrite), new ChessBoarsPosition('e', 5).toPosition());
-
+            putNewPiece('a', 8, new Rook(board, Color.Black));
+            putNewPiece('b', 8, new Knight(board, Color.Black));
+            putNewPiece('c', 8, new Bishop(board, Color.Black));
+            putNewPiece('d', 8, new Queen(board, Color.Black));
+            putNewPiece('e', 8, new King(board, Color.Black, this));
+            putNewPiece('f', 8, new Bishop(board, Color.Black));
+            putNewPiece('g', 8, new Knight(board, Color.Black));
+            putNewPiece('h', 8, new Rook(board, Color.Black));
+            putNewPiece('a', 7, new Pawn(board, Color.Black, this));
+            putNewPiece('b', 7, new Pawn(board, Color.Black, this));
+            putNewPiece('c', 7, new Pawn(board, Color.Black, this));
+            putNewPiece('d', 7, new Pawn(board, Color.Black, this));
+            putNewPiece('e', 7, new Pawn(board, Color.Black, this));
+            putNewPiece('f', 7, new Pawn(board, Color.Black, this));
+            putNewPiece('g', 7, new Pawn(board, Color.Black, this));
+            putNewPiece('h', 7, new Pawn(board, Color.Black, this));
         }
     }
 }

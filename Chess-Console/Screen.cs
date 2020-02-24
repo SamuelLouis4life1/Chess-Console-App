@@ -9,6 +9,40 @@ namespace Chess_Console
 {
     class Screen
     {
+        public static void printChessMatch(ChessMatch match )
+        {
+            PrintChessBoard(match.board);
+            Console.WriteLine();
+            printCapturedPieces(match);
+            Console.WriteLine();
+            Console.WriteLine("Turn: " + match.turn);
+            Console.WriteLine("Waiting to play: " + match.currentPlayer);
+        }
+
+        public static void printCapturedPieces( ChessMatch match)
+        {
+            Console.WriteLine("Captured pieces: ");
+            Console.Write("Write: ");
+            printConjunct(match.capturedPieces(Color.Whrite));
+            Console.Write("Black: ");
+            ConsoleColor aux = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            printConjunct(match.capturedPieces(Color.Black));
+            Console.ForegroundColor = aux;
+            Console.WriteLine();
+        }
+
+        public static void printConjunct(HashSet<Piece> conjunct)
+        {
+            Console.Write("[ ");
+            foreach (Piece x in conjunct)
+            {
+                Console.WriteLine(x + " ");
+            }
+            Console.Write("] ");
+        }
+
+
         public static void PrintChessBoard(Chessboard board)
         {
             for (int i = 0; i < board.lines; i++)
@@ -62,7 +96,7 @@ namespace Chess_Console
         {
             if (piece == null)
             {
-                Console.Write("- ");
+                Console.Write("-");
             }
             else
             {
@@ -78,7 +112,7 @@ namespace Chess_Console
                     Console.ForegroundColor = aux;
                 }
             }
-            Console.Write("");
+            Console.Write(" ");
 
         }
     }

@@ -1,27 +1,26 @@
-﻿using System;
-using Chess_Console;
-using chessboard;
+﻿using chessboard;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace chess
 {
-    class King : Piece
+    class Knight : Piece
     {
-        public King (Chessboard chessboard, Color color, ChessMatch chessMatch ) : base (chessboard, color)
+        public Knight(Chessboard chessboard, Color color) : base(chessboard, color)
         {
 
         }
 
         public override string ToString()
         {
-            return "Ki";
+            return "K";
         }
 
         private bool canMove(Position position)
         {
             Piece piece = chessboard.piece(position);
-            return piece == null || piece.color != color;  
+            return piece == null || piece.color != color;
         }
 
         public override bool[,] possibleMovements()
@@ -30,69 +29,54 @@ namespace chess
 
             Position position = new Position(0, 0);
 
-            //above
-            position.setValues(position.line - 1, position.column);
-
-            if (chessboard.ValidPosition(position) && canMove (position))
-            {
-                array[position.line, position.column] = true;
-            }
-
-            //northeast
-            position.setValues(position.line - 1, position.column + 1);
-
+            position.setValues(position.line - 1, position.column - 2);
             if (chessboard.ValidPosition(position) && canMove(position))
             {
                 array[position.line, position.column] = true;
             }
 
-            //right
-            position.setValues(position.line, position.column +1);
-
+            position.setValues(position.line - 2, position.column - 1);
             if (chessboard.ValidPosition(position) && canMove(position))
             {
                 array[position.line, position.column] = true;
             }
 
-            //southeast
-            position.setValues(position.line + 1, position.column + 1);
-
+            position.setValues(position.line - 2, position.column + 1);
             if (chessboard.ValidPosition(position) && canMove(position))
             {
                 array[position.line, position.column] = true;
             }
 
-            //below
-            position.setValues(position.line + 1, position.column);
-
+            position.setValues(position.line - 1, position.column + 2);
             if (chessboard.ValidPosition(position) && canMove(position))
             {
                 array[position.line, position.column] = true;
             }
 
-            //south-west
-            position.setValues(position.line + 1, position.column - 1);
-
+            position.setValues(position.line + 1, position.column + 2);
             if (chessboard.ValidPosition(position) && canMove(position))
             {
                 array[position.line, position.column] = true;
             }
 
-            //left
-            position.setValues(position.line, position.column - 1);
-
+            position.setValues(position.line +2 , position.column + 1);
             if (chessboard.ValidPosition(position) && canMove(position))
             {
                 array[position.line, position.column] = true;
             }
 
-            //north-west
-            position.setValues(position.line - 1, position.column - 1);
-
+            position.setValues(position.line + 2, position.column - 1);
             if (chessboard.ValidPosition(position) && canMove(position))
             {
                 array[position.line, position.column] = true;
             }
+
+            position.setValues(position.line + 1, position.column - 2);
+            if (chessboard.ValidPosition(position) && canMove(position))
+            {
+                array[position.line, position.column] = true;
+            }
+
             return array;
         }
     }
