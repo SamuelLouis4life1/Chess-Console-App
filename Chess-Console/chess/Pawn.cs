@@ -68,18 +68,17 @@ namespace chess
                 // special move en passant 
                 if (position.line == 3)
                 {
-                    //Position left = new Position(position.line, position.column - 1);
-                    //if (chessboard.ValidPosition(left) && existeEnemy(left) && chessboard.piece(left) == chessMatch.vulnerableEnPassant)
-                    //{
-                    //    array[left.line - 1, left.column] = true;
-                    //}
-                    //Position right = new Position(position.line, position.column + 1);
-                    //if (chessboard.ValidPosition(right) && existeEnemy(right) && chessboard.piece(right) == chessMatch.vulnerableEnPassant)
-                    //{
-                    //    array[right.line - 1, right.column] = true;
-                    //}
+                    Position left = new Position(position.line, position.column - 1);
+                    if (chessboard.ValidPosition(left) && existeEnemy(left) && chessboard.piece(left) == chessMatch.vulnerableEnPassant)
+                    {
+                        array[left.line - 1, left.column] = true;
+                    }
+                    Position right = new Position(position.line, position.column + 1);
+                    if (chessboard.ValidPosition(right) && existeEnemy(right) && chessboard.piece(right) == chessMatch.vulnerableEnPassant)
+                    {
+                        array[right.line - 1, right.column] = true;
+                    }
                 }
-
             }
             else
             {
@@ -111,16 +110,16 @@ namespace chess
                 // special move en passant 
                 if (position.line == 4)
                 {
-                    //Position left = new Position(position.line, position.column - 1);
-                    //if (chessboard.ValidPosition(left) && existeEnemy(left) && chessboard.piece(left) == chessMatch.vulnerableEnPassant)
-                    //{
-                    //    array[left.line + 1, left.column] = true;
-                    //}
-                    //Position right = new Position(position.line, position.column + 1);
-                    //if (chessboard.ValidPosition(right) && existeEnemy(right) && chessboard.piece(right) == chessMatch.vulnerableEnPassant)
-                    //{
-                    //    array[right.line + 1, right.column] = true;
-                    //}
+                    Position left = new Position(position.line, position.column - 1);
+                    if (chessboard.ValidPosition(left) && existeEnemy(left) && chessboard.piece(left) == chessMatch.vulnerableEnPassant)
+                    {
+                        array[left.line + 1, left.column] = true;
+                    }
+                    Position right = new Position(position.line, position.column + 1);
+                    if (chessboard.ValidPosition(right) && existeEnemy(right) && chessboard.piece(right) == chessMatch.vulnerableEnPassant)
+                    {
+                        array[right.line + 1, right.column] = true;
+                    }
                 }
             }
             return array;

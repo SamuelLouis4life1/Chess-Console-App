@@ -45,6 +45,8 @@ namespace chessboard
             return false;
         }
 
+        // canMoveFor change to movementPossible
+
         public bool canMoveFor(Position position)
         {
             return possibleMovements()[position.line, position.column];

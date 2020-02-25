@@ -108,7 +108,7 @@ namespace Chess_Console
         {
             if (piece == null)
             {
-                Console.Write("-");
+                Console.Write("- ");
             }
             else
             {

@@ -14,7 +14,6 @@ namespace Chess_Console
             {
                 ChessMatch match = new ChessMatch();
 
-
                 while (!match.finished)
                 {
                     try

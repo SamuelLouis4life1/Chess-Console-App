@@ -15,6 +15,7 @@ namespace chess
         private HashSet<Piece> pieces;
         private HashSet<Piece> captured;
         public bool cheque { get; private set; }
+        public Piece vulnerableEnPassant { get; private set; }
 
         public ChessMatch()
         {
@@ -23,6 +24,7 @@ namespace chess
             currentPlayer = Color.Whrite;
             finished = false;
             cheque = false;
+            vulnerableEnPassant = null;
             pieces = new HashSet<Piece>();
             captured = new HashSet<Piece>();
             putPieces();
@@ -38,8 +40,48 @@ namespace chess
             {
                 captured.Add(capturedPiece);
             }
+
+            // #special move Castle Kingside
+            if (piece is King && destiny.column == origin.column + 2)
+            {
+                Position originRook = new Position(origin.line, origin.column + 3);
+                Position destinyRook = new Position(origin.line, origin.column + 1);
+                Piece rook = board.RemovePiece(originRook);
+                rook.increaseMovementAmount();
+                board.putPiece(rook, destinyRook);
+            }
+
+            // #special move Castle Queenside
+            if (piece is King && destiny.column == origin.column -2)
+            {
+                Position originRook = new Position(origin.line, origin.column - 4);
+                Position destinyRook = new Position(origin.line, origin.column - 1);
+                Piece rook = board.RemovePiece(originRook);
+                rook.increaseMovementAmount();
+                board.putPiece(rook, destinyRook);
+            }
+
+            // #special move en passant
+            if (piece is Pawn)
+            {
+                if (origin.column != destiny.column && capturedPiece == null)
+                {
+                    Position positionPawn;
+                    if (piece.color == Color.Whrite)
+                    {
+                        positionPawn = new Position(destiny.line + 1, destiny.column);
+                    }
+                    else
+                    {
+                        positionPawn = new Position(destiny.line + 1, destiny.column);
+                    }
+                    capturedPiece = board.RemovePiece(positionPawn);
+                    captured.Add(capturedPiece);
+                }
+            }
+
             return capturedPiece;
-        }
+        }   
 
         public void undoMovement(Position origin, Position destiny, Piece capturedPiece)
         {
@@ -51,6 +93,46 @@ namespace chess
                 captured.Remove(capturedPiece);
             }
             board.putPiece(piece, origin);
+
+            // #special move Castle Kingside
+            if (piece is King && destiny.column == origin.column + 2)
+            {
+                Position originRook = new Position(origin.line, origin.column + 3);
+                Position destinyRook = new Position(origin.line, origin.column + 1);
+                Piece rook = board.RemovePiece(destinyRook);
+                rook.decreaseMovementAmount();
+                board.putPiece(rook, originRook);
+            }
+
+            // #special move Castle Queenside
+            if (piece is King && destiny.column == origin.column - 2)
+            {
+                Position originRook = new Position(origin.line, origin.column - 4);
+                Position destinyRook = new Position(origin.line, origin.column - 1);
+                Piece rook = board.RemovePiece(destinyRook);
+                rook.decreaseMovementAmount();
+                board.putPiece(rook, originRook);
+            }
+
+            // #special move en passant
+            if (piece is Pawn)
+            {
+                if (origin.column != destiny.column && capturedPiece == vulnerableEnPassant)
+                {
+                    Piece pawn = board.RemovePiece(destiny);
+                    Position positionPawn;
+                    if (piece.color == Color.Whrite)
+                    {
+                        positionPawn = new Position(3, destiny.column);
+                    }
+                    else
+                    {
+                        positionPawn = new Position(4, destiny.column);
+                    }
+                    board.putPiece(pawn, positionPawn);
+                }
+            }
+
         }
 
         public void executeMove( Position origin, Position destiny)
@@ -61,6 +143,20 @@ namespace chess
             {
                 undoMovement(origin, destiny, capturedPiece);
                 throw new ChessBoardException("You can't put yourself in check ");
+            }
+            Piece piece = board.piece(destiny);
+
+            // #special move promotion
+            if (piece is Pawn)
+            {
+                if ((piece.color == Color.Whrite && destiny.line == 0) || (piece.color == Color.Black && destiny.line == 7))
+                {
+                    piece = board.RemovePiece(destiny);
+                    pieces.Remove(piece);
+                    Piece queen = new Queen(board, piece.color);
+                    board.putPiece(queen, destiny);
+                    pieces.Add(queen);
+                }
             }
 
             if (isInCheck(adversary(currentPlayer)))
@@ -80,7 +176,19 @@ namespace chess
             {
                 turn++;
                 changePlayer();
-            }           
+            }
+
+            // #special move en passant
+            if (piece is Pawn && (destiny.line == origin.line - 2) || destiny.line == origin.line + 2)
+            {
+                vulnerableEnPassant = piece;
+            }
+            else
+            {
+                vulnerableEnPassant = null;
+            }
+
+
         }
 
         public void validateOriginPossiton(Position position)
