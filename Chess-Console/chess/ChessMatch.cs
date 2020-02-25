@@ -14,6 +14,7 @@ namespace chess
         public bool finished { get; set;}
         private HashSet<Piece> pieces;
         private HashSet<Piece> captured;
+        public bool cheque { get; private set; }
 
         public ChessMatch()
         {
@@ -21,12 +22,13 @@ namespace chess
             turn = 1;
             currentPlayer = Color.Whrite;
             finished = false;
+            cheque = false;
             pieces = new HashSet<Piece>();
             captured = new HashSet<Piece>();
             putPieces();
         }
 
-        public void executeMovement(Position origin, Position destiny )
+        public Piece executeMovement(Position origin, Position destiny )
         {
             Piece piece = board.RemovePiece(origin);
             piece.increaseMovementAmount();
@@ -36,11 +38,40 @@ namespace chess
             {
                 captured.Add(capturedPiece);
             }
+            return capturedPiece;
+        }
+
+        public void undoMovement(Position origin, Position destiny, Piece capturedPiece)
+        {
+            Piece piece = board.RemovePiece(destiny);
+            piece.decreaseMovementAmount();
+            if (capturedPiece != null)
+            {
+                board.putPiece(capturedPiece, destiny);
+                captured.Remove(capturedPiece);
+            }
+            board.putPiece(piece, origin);
         }
 
         public void executeMove( Position origin, Position destiny)
         {
-            executeMovement(origin, destiny);
+            Piece capturedPiece = executeMovement(origin, destiny);
+
+            if (isInCheck(currentPlayer))
+            {
+                undoMovement(origin, destiny, capturedPiece);
+                throw new ChessBoardException("You can't put yourself in check ");
+            }
+
+            if (isInCheck(adversary(currentPlayer)))
+            {
+                cheque = true;
+            }
+            else
+            {
+                cheque = false;
+            }
+
             turn++;
             changePlayer();
         }

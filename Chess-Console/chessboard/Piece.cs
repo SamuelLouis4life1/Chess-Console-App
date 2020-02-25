@@ -24,6 +24,11 @@ namespace chessboard
             movementAmount++;
         }
 
+        public void decreaseMovementAmount()
+        {
+            movementAmount--;
+        }
+
         public bool existingPossibleMovement()
         {
             bool[,] array = possibleMovements();
