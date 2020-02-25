@@ -73,7 +73,7 @@ namespace chess
                     }
                     else
                     {
-                        positionPawn = new Position(destiny.line + 1, destiny.column);
+                        positionPawn = new Position(destiny.line - 1, destiny.column);
                     }
                     capturedPiece = board.RemovePiece(positionPawn);
                     captured.Add(capturedPiece);
@@ -144,6 +144,7 @@ namespace chess
                 undoMovement(origin, destiny, capturedPiece);
                 throw new ChessBoardException("You can't put yourself in check ");
             }
+
             Piece piece = board.piece(destiny);
 
             // #special move promotion
@@ -156,6 +157,8 @@ namespace chess
                     Piece queen = new Queen(board, piece.color);
                     board.putPiece(queen, destiny);
                     pieces.Add(queen);
+
+                    // implement more promotion like Rook, Knight, Bishop
                 }
             }
 
