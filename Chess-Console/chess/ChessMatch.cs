@@ -72,8 +72,15 @@ namespace chess
                 cheque = false;
             }
 
-            turn++;
-            changePlayer();
+            if (testChequeMate(adversary(currentPlayer)))
+            {
+                finished = true;
+            }
+            else
+            {
+                turn++;
+                changePlayer();
+            }           
         }
 
         public void validateOriginPossiton(Position position)
@@ -179,6 +186,37 @@ namespace chess
                 }
             }
             return false;
+        }
+
+        public bool testChequeMate(Color color)
+        {
+            if (!isInCheck(color))
+            {
+                return false;
+            }
+            foreach (Piece x in pieceInPlay(color))
+            {
+                bool[,] array = x.possibleMovements();
+                for (int i = 0; i < board.lines; i ++)
+                {
+                    for (int j = 0; j < board.columns; j++)
+                    {
+                        if (array[i, j])
+                        {
+                            Position origin = x.position;
+                            Position destiny = new Position(i, j);
+                            Piece capturedPiece = executeMovement(origin, destiny);
+                            bool testCheque = isInCheck(color);
+                            undoMovement(origin, destiny, capturedPiece);
+                            if (!testCheque)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
         }
 
         public void putNewPiece(char column, int line, Piece piece)
